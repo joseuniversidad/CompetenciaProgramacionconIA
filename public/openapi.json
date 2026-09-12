@@ -1,305 +1,305 @@
 {
-  "openapi": "3.0.3",
-  "info": {
-    "title": "Solar GT API",
-    "version": "1.0.0",
-    "description": "API de lectura pública. Administración mediante sesión web y CSRF. Consulte docs/MANUAL.md y /#docs."
-  },
-  "servers": [
-    {
-      "url": "/api"
+    "openapi": "3.0.3",
+    "info": {
+        "title": "Solar GT API",
+        "version": "1.0.0",
+        "description": "API de lectura pública. Administración mediante sesión web y CSRF. Consulte docs/MANUAL.md y /#docs."
+    },
+    "servers": [
+        {
+            "url": "/api"
+        }
+    ],
+    "paths": {
+        "/departments": {
+            "get": {
+                "summary": "Catálogo de departamentos",
+                "parameters": [],
+                "responses": {
+                    "200": {
+                        "description": "Datos consultados correctamente. Unidades: kW, kWh, kg CO2 y toneladas."
+                    },
+                    "404": {
+                        "description": "Registro no encontrado"
+                    },
+                    "422": {
+                        "description": "Parámetros inválidos; JSON message y errors"
+                    },
+                    "429": {
+                        "description": "Límite de solicitudes excedido"
+                    }
+                }
+            }
+        },
+        "/farms": {
+            "get": {
+                "summary": "Lista de granjas",
+                "parameters": [
+                    {
+                        "name": "department_id",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "minimum": 1
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Datos consultados correctamente. Unidades: kW, kWh, kg CO2 y toneladas."
+                    },
+                    "404": {
+                        "description": "Registro no encontrado"
+                    },
+                    "422": {
+                        "description": "Parámetros inválidos; JSON message y errors"
+                    },
+                    "429": {
+                        "description": "Límite de solicitudes excedido"
+                    }
+                }
+            }
+        },
+        "/farms/{farm}": {
+            "get": {
+                "summary": "Detalle de granja",
+                "parameters": [
+                    {
+                        "name": "farm",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "minimum": 1
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Datos consultados correctamente. Unidades: kW, kWh, kg CO2 y toneladas."
+                    },
+                    "404": {
+                        "description": "Registro no encontrado"
+                    },
+                    "422": {
+                        "description": "Parámetros inválidos; JSON message y errors"
+                    },
+                    "429": {
+                        "description": "Límite de solicitudes excedido"
+                    }
+                }
+            }
+        },
+        "/panels": {
+            "get": {
+                "summary": "Modelos de panel",
+                "parameters": [],
+                "responses": {
+                    "200": {
+                        "description": "Datos consultados correctamente. Unidades: kW, kWh, kg CO2 y toneladas."
+                    },
+                    "404": {
+                        "description": "Registro no encontrado"
+                    },
+                    "422": {
+                        "description": "Parámetros inválidos; JSON message y errors"
+                    },
+                    "429": {
+                        "description": "Límite de solicitudes excedido"
+                    }
+                }
+            }
+        },
+        "/generations": {
+            "get": {
+                "summary": "Mediciones mensuales",
+                "parameters": [
+                    {
+                        "name": "farm_id",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "minimum": 1
+                        }
+                    },
+                    {
+                        "name": "period",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "pattern": "^\\d{4}-\\d{2}$",
+                            "example": "2026-08"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Datos consultados correctamente. Unidades: kW, kWh, kg CO2 y toneladas."
+                    },
+                    "404": {
+                        "description": "Registro no encontrado"
+                    },
+                    "422": {
+                        "description": "Parámetros inválidos; JSON message y errors"
+                    },
+                    "429": {
+                        "description": "Límite de solicitudes excedido"
+                    }
+                }
+            }
+        },
+        "/statistics": {
+            "get": {
+                "summary": "Indicadores y reportes",
+                "parameters": [
+                    {
+                        "name": "department_id",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "minimum": 1
+                        }
+                    },
+                    {
+                        "name": "period",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "pattern": "^\\d{4}-\\d{2}$",
+                            "example": "2026-08"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Datos consultados correctamente. Unidades: kW, kWh, kg CO2 y toneladas."
+                    },
+                    "404": {
+                        "description": "Registro no encontrado"
+                    },
+                    "422": {
+                        "description": "Parámetros inválidos; JSON message y errors"
+                    },
+                    "429": {
+                        "description": "Límite de solicitudes excedido"
+                    }
+                }
+            }
+        },
+        "/alerts": {
+            "get": {
+                "summary": "Alertas de desempeño",
+                "parameters": [
+                    {
+                        "name": "farm_id",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "minimum": 1
+                        }
+                    },
+                    {
+                        "name": "period",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "pattern": "^\\d{4}-\\d{2}$",
+                            "example": "2026-08"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Datos consultados correctamente. Unidades: kW, kWh, kg CO2 y toneladas."
+                    },
+                    "404": {
+                        "description": "Registro no encontrado"
+                    },
+                    "422": {
+                        "description": "Parámetros inválidos; JSON message y errors"
+                    },
+                    "429": {
+                        "description": "Límite de solicitudes excedido"
+                    }
+                }
+            }
+        },
+        "/farms/{farm}/forecast": {
+            "get": {
+                "summary": "Proyección y backtest",
+                "parameters": [
+                    {
+                        "name": "farm",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "minimum": 1
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Datos consultados correctamente. Unidades: kW, kWh, kg CO2 y toneladas."
+                    },
+                    "404": {
+                        "description": "Registro no encontrado"
+                    },
+                    "422": {
+                        "description": "Parámetros inválidos; JSON message y errors"
+                    },
+                    "429": {
+                        "description": "Límite de solicitudes excedido"
+                    }
+                }
+            }
+        },
+        "/reports/departments.csv": {
+            "get": {
+                "summary": "Reporte CSV",
+                "parameters": [
+                    {
+                        "name": "department_id",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "minimum": 1
+                        }
+                    },
+                    {
+                        "name": "period",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "pattern": "^\\d{4}-\\d{2}$",
+                            "example": "2026-08"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Datos consultados correctamente. Unidades: kW, kWh, kg CO2 y toneladas."
+                    },
+                    "404": {
+                        "description": "Registro no encontrado"
+                    },
+                    "422": {
+                        "description": "Parámetros inválidos; JSON message y errors"
+                    },
+                    "429": {
+                        "description": "Límite de solicitudes excedido"
+                    }
+                }
+            }
+        }
     }
-  ],
-  "paths": {
-    "/departments": {
-      "get": {
-        "summary": "Catálogo de departamentos",
-        "parameters": [],
-        "responses": {
-          "200": {
-            "description": "Datos consultados correctamente. Unidades: kW, kWh, kg CO2 y toneladas."
-          },
-          "404": {
-            "description": "Registro no encontrado"
-          },
-          "422": {
-            "description": "Parámetros inválidos; JSON message y errors"
-          },
-          "429": {
-            "description": "Límite de solicitudes excedido"
-          }
-        }
-      }
-    },
-    "/farms": {
-      "get": {
-        "summary": "Lista de granjas",
-        "parameters": [
-          {
-            "name": "department_id",
-            "in": "query",
-            "required": false,
-            "schema": {
-              "type": "integer",
-              "minimum": 1
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Datos consultados correctamente. Unidades: kW, kWh, kg CO2 y toneladas."
-          },
-          "404": {
-            "description": "Registro no encontrado"
-          },
-          "422": {
-            "description": "Parámetros inválidos; JSON message y errors"
-          },
-          "429": {
-            "description": "Límite de solicitudes excedido"
-          }
-        }
-      }
-    },
-    "/farms/{farm}": {
-      "get": {
-        "summary": "Detalle de granja",
-        "parameters": [
-          {
-            "name": "farm",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "integer",
-              "minimum": 1
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Datos consultados correctamente. Unidades: kW, kWh, kg CO2 y toneladas."
-          },
-          "404": {
-            "description": "Registro no encontrado"
-          },
-          "422": {
-            "description": "Parámetros inválidos; JSON message y errors"
-          },
-          "429": {
-            "description": "Límite de solicitudes excedido"
-          }
-        }
-      }
-    },
-    "/panels": {
-      "get": {
-        "summary": "Modelos de panel",
-        "parameters": [],
-        "responses": {
-          "200": {
-            "description": "Datos consultados correctamente. Unidades: kW, kWh, kg CO2 y toneladas."
-          },
-          "404": {
-            "description": "Registro no encontrado"
-          },
-          "422": {
-            "description": "Parámetros inválidos; JSON message y errors"
-          },
-          "429": {
-            "description": "Límite de solicitudes excedido"
-          }
-        }
-      }
-    },
-    "/generations": {
-      "get": {
-        "summary": "Mediciones mensuales",
-        "parameters": [
-          {
-            "name": "farm_id",
-            "in": "query",
-            "required": false,
-            "schema": {
-              "type": "integer",
-              "minimum": 1
-            }
-          },
-          {
-            "name": "period",
-            "in": "query",
-            "required": false,
-            "schema": {
-              "type": "string",
-              "pattern": "^\\d{4}-\\d{2}$",
-              "example": "2026-08"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Datos consultados correctamente. Unidades: kW, kWh, kg CO2 y toneladas."
-          },
-          "404": {
-            "description": "Registro no encontrado"
-          },
-          "422": {
-            "description": "Parámetros inválidos; JSON message y errors"
-          },
-          "429": {
-            "description": "Límite de solicitudes excedido"
-          }
-        }
-      }
-    },
-    "/statistics": {
-      "get": {
-        "summary": "Indicadores y reportes",
-        "parameters": [
-          {
-            "name": "department_id",
-            "in": "query",
-            "required": false,
-            "schema": {
-              "type": "integer",
-              "minimum": 1
-            }
-          },
-          {
-            "name": "period",
-            "in": "query",
-            "required": false,
-            "schema": {
-              "type": "string",
-              "pattern": "^\\d{4}-\\d{2}$",
-              "example": "2026-08"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Datos consultados correctamente. Unidades: kW, kWh, kg CO2 y toneladas."
-          },
-          "404": {
-            "description": "Registro no encontrado"
-          },
-          "422": {
-            "description": "Parámetros inválidos; JSON message y errors"
-          },
-          "429": {
-            "description": "Límite de solicitudes excedido"
-          }
-        }
-      }
-    },
-    "/alerts": {
-      "get": {
-        "summary": "Alertas de desempeño",
-        "parameters": [
-          {
-            "name": "farm_id",
-            "in": "query",
-            "required": false,
-            "schema": {
-              "type": "integer",
-              "minimum": 1
-            }
-          },
-          {
-            "name": "period",
-            "in": "query",
-            "required": false,
-            "schema": {
-              "type": "string",
-              "pattern": "^\\d{4}-\\d{2}$",
-              "example": "2026-08"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Datos consultados correctamente. Unidades: kW, kWh, kg CO2 y toneladas."
-          },
-          "404": {
-            "description": "Registro no encontrado"
-          },
-          "422": {
-            "description": "Parámetros inválidos; JSON message y errors"
-          },
-          "429": {
-            "description": "Límite de solicitudes excedido"
-          }
-        }
-      }
-    },
-    "/farms/{farm}/forecast": {
-      "get": {
-        "summary": "Proyección y backtest",
-        "parameters": [
-          {
-            "name": "farm",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "integer",
-              "minimum": 1
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Datos consultados correctamente. Unidades: kW, kWh, kg CO2 y toneladas."
-          },
-          "404": {
-            "description": "Registro no encontrado"
-          },
-          "422": {
-            "description": "Parámetros inválidos; JSON message y errors"
-          },
-          "429": {
-            "description": "Límite de solicitudes excedido"
-          }
-        }
-      }
-    },
-    "/reports/departments.csv": {
-      "get": {
-        "summary": "Reporte CSV",
-        "parameters": [
-          {
-            "name": "department_id",
-            "in": "query",
-            "required": false,
-            "schema": {
-              "type": "integer",
-              "minimum": 1
-            }
-          },
-          {
-            "name": "period",
-            "in": "query",
-            "required": false,
-            "schema": {
-              "type": "string",
-              "pattern": "^\\d{4}-\\d{2}$",
-              "example": "2026-08"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Datos consultados correctamente. Unidades: kW, kWh, kg CO2 y toneladas."
-          },
-          "404": {
-            "description": "Registro no encontrado"
-          },
-          "422": {
-            "description": "Parámetros inválidos; JSON message y errors"
-          },
-          "429": {
-            "description": "Límite de solicitudes excedido"
-          }
-        }
-      }
-    }
-  }
 }

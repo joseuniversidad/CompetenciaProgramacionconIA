@@ -1,11 +1,10 @@
 $ErrorActionPreference = 'Stop'
-$projectPath = $PSScriptRoot
-$dataPath = Join-Path (Split-Path $projectPath -Parent) '.runtime\mysql'
-foreach ($port in @(3308,8000)) {
- $listeners=Get-NetTCPConnection -LocalPort $port -State Listen -ErrorAction SilentlyContinue
- foreach ($connection in $listeners) {
-  $process=Get-CimInstance Win32_Process -Filter "ProcessId = $($connection.OwningProcess)"
-  if (($port -eq 3308 -and $process.CommandLine -like '*--port=3308*' -and $process.CommandLine -like '*DESARROLLO WEB*') -or ($port -eq 8000 -and $process.CommandLine -like '*127.0.0.1:8000*' -and $process.Name -eq 'php.exe')) { Stop-Process -Id $process.ProcessId }
- }
+$pidFile = Join-Path $PSScriptRoot 'storage/server.pid'
+if (Test-Path -LiteralPath $pidFile) {
+ $serverId = [int](Get-Content -LiteralPath $pidFile)
+ $server = Get-Process -Id $serverId -ErrorAction SilentlyContinue
+ if ($server -and $server.ProcessName -eq 'php' -and $server.StartTime -le (Get-Item $pidFile).LastWriteTime -and $server.StartTime -gt (Get-Item $pidFile).LastWriteTime.AddSeconds(-15)) { Stop-Process -Id $serverId }
 }
+# La instancia de demostración fue creada exclusivamente para Solar GT en 3308.
+& 'C:\laragon\bin\mysql\mysql-8.0.30-winx64\bin\mysqladmin.exe' -h 127.0.0.1 -P 3308 -u root shutdown
 Write-Host 'Servicios locales de Solar GT detenidos.'
