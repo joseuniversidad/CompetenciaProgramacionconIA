@@ -19,15 +19,14 @@ La conversación y los registros de herramientas son evidencia original. Los sig
 - “Revisa la relación granja-panel y demuestra el cálculo de 100 paneles de 0.55 kW.”
 - “Contrasta la implementación con RF-01 a RF-17 e identifica pendientes de publicación.”
 
-## Créditos pendientes de confirmar
-No se atribuyen tareas o revisiones humanas que no se han confirmado. Completar antes de entregar:
+## Créditos del equipo
 
 | Integrante | Rol real | Tareas realizadas y explicables |
 |---|---|---|
-| Nombre por confirmar | Por confirmar | Por confirmar |
-| Segundo integrante, si aplica | Por confirmar | Por confirmar |
+| Lester Esquivel | Desarrollo conjunto | Participó junto con Jose Cayetano en todas las áreas del proyecto (backend, dominio, API, UI, mapa, cálculos y proyección), sin división estricta de tareas. |
+| Jose Cayetano | Desarrollo conjunto | Participó junto con Lester Esquivel en todas las áreas del proyecto (backend, dominio, API, UI, mapa, cálculos y proyección), sin división estricta de tareas. |
 
-Distribución sugerida para la defensa: una persona explica datos, Laravel, validación y API; otra explica UI, mapa, cálculos y proyección. Si participa una persona, debe cubrir ambas áreas. Esta distribución es propuesta, no evidencia de participación.
+Distribución para la defensa: al trabajar todo el equipo por igual en todas las áreas, ambos integrantes deben poder explicar cualquier parte de la solución (datos, Laravel, validación, API, UI, mapa, cálculos y proyección).
 
 ## Evidencias del organizador
 El check-in, las fotos de participación y la revisión humana son responsabilidad del equipo y no se pueden fabricar. Conservar la conversación original y los commits reales. No alterar fechas ni atribuciones para simular trabajo previo.
