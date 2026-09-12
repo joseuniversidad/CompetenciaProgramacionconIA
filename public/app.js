@@ -13,6 +13,25 @@ const $ = (s) => document.querySelector(s),
         ),
     num = (v, d = 0) =>
         Number(v ?? 0).toLocaleString("es-GT", { maximumFractionDigits: d });
+if (window.gsap && window.ScrollTrigger) gsap.registerPlugin(ScrollTrigger);
+function toast(icon, title) {
+    if (window.Swal) {
+        Swal.fire({
+            toast: true,
+            position: "top-end",
+            icon,
+            title,
+            showConfirmButton: false,
+            timer: 2800,
+            timerProgressBar: true,
+        });
+    } else {
+        const t = $("#error");
+        t.textContent = title;
+        t.hidden = false;
+        setTimeout(() => (t.hidden = true), 2800);
+    }
+}
 let page = "dashboard",
     departments = [],
     farms = [],
@@ -95,7 +114,69 @@ function table(headers, rows) {
     return `<div class="table-wrap"><table><thead><tr>${headers.map((h) => `<th>${h}</th>`).join("")}</tr></thead><tbody>${rows.join("") || `<tr><td colspan="${headers.length}" class="empty">No hay registros para esta selección.</td></tr>`}</tbody></table></div>`;
 }
 function metric(label, value, unit, note, symbol) {
-    return `<article class="card metric"><small>${label}</small><span class="symbol">${symbol}</span><strong>${num(value, value < 100 ? 1 : 0)} <em>${unit}</em></strong><p>${note}</p></article>`;
+    const d = value < 100 ? 1 : 0;
+    return `<article class="card metric"><small>${label}</small><span class="symbol">${symbol}</span><strong><span class="count" data-value="${value || 0}" data-decimals="${d}">0</span> <em>${unit}</em></strong><p>${note}</p></article>`;
+}
+function animateCounters(container) {
+    const counters = container.querySelectorAll(".count");
+    if (!window.gsap) {
+        counters.forEach(
+            (el) =>
+                (el.textContent = num(
+                    Number(el.dataset.value),
+                    Number(el.dataset.decimals),
+                )),
+        );
+        return;
+    }
+    counters.forEach((el) => {
+        const target = Number(el.dataset.value) || 0,
+            decimals = Number(el.dataset.decimals) || 0,
+            obj = { v: 0 };
+        gsap.to(obj, {
+            v: target,
+            duration: 1,
+            ease: "power2.out",
+            onUpdate: () => (el.textContent = num(obj.v, decimals)),
+        });
+    });
+}
+function animateReveal(container) {
+    if (!window.gsap) return;
+    const targets = container.querySelectorAll(".card, .alert-card");
+    if (!targets.length) return;
+    if (window.ScrollTrigger) {
+        ScrollTrigger.batch(targets, {
+            start: "top 94%",
+            once: true,
+            onEnter: (batch) =>
+                gsap.fromTo(
+                    batch,
+                    { opacity: 0, y: 22 },
+                    {
+                        opacity: 1,
+                        y: 0,
+                        duration: 0.45,
+                        stagger: 0.06,
+                        ease: "power2.out",
+                        overwrite: true,
+                    },
+                ),
+        });
+        ScrollTrigger.refresh();
+    } else {
+        gsap.fromTo(
+            targets,
+            { opacity: 0, y: 22 },
+            {
+                opacity: 1,
+                y: 0,
+                duration: 0.45,
+                stagger: 0.06,
+                ease: "power2.out",
+            },
+        );
+    }
 }
 function editButton(kind, id, label = "Editar") {
     return window.canEdit
@@ -233,6 +314,18 @@ async function load() {
         stats = await api("/api/statistics?" + query());
         if (ticket !== loadId) return;
         $("#alert-count").textContent = stats.totals.alerts || "";
+        if (window.gsap) {
+            gsap.killTweensOf("#alert-count");
+            if (stats.totals.alerts > 0)
+                gsap.to("#alert-count", {
+                    scale: 1.18,
+                    duration: 0.6,
+                    yoyo: true,
+                    repeat: -1,
+                    ease: "sine.inOut",
+                });
+            else gsap.set("#alert-count", { clearProps: "scale" });
+        }
         await render(ticket);
     } catch (e) {
         $("#error").textContent = e.message;
@@ -257,6 +350,7 @@ async function render(ticket) {
             )}</div></article></div><div class="grid"><article class="card"><div class="card-heading"><div><h2>Distribución solar</h2><p>Instalaciones por departamento</p></div><button data-go="map">Explorar mapa ↗</button></div><div id="map" class="map"></div><div class="map-legend">● Colores por departamento · Selecciona una granja para consultar sus datos</div></article><article class="card"><div class="card-heading"><div><h2>Monitoreo de desempeño</h2><p>Detecta dónde se necesita atención</p></div></div><div class="details-kpis"><div><strong>${t.expected_kwh ? num((t.actual_kwh / t.expected_kwh) * 100, 1) + "%" : "—"}</strong><small>Cumplimiento nacional</small></div><div><strong>${num(t.alerts)}</strong><small>Registros con alerta</small></div></div><h3>Una regla, una señal clara</h3><p>Se registra una alerta cuando la generación real es 20% o más inferior a la esperada en el mismo mes.</p><button data-go="alerts">Consultar alertas →</button><h3 style="margin-top:30px">Proyección explicable</h3><p>Promedio de tres meses consecutivos y evaluación histórica sin usar datos futuros.</p><button data-go="forecast">Ver proyecciones →</button></article></div>`;
         energyChart("energy", stats.monthly);
         mapView("map", fs);
+        animateCounters(c);
     } else if (page === "map") {
         c.innerHTML = `<article class="card"><div class="card-heading"><div><h2>${fs.length} granjas en el territorio</h2><p>Arrastra para navegar. Usa + y − para acercar y alejar.</p></div><span class="pill">Ubicaciones simuladas</span></div><div id="map" class="map fullmap"></div><div class="map-legend">${departments
             .filter((d) => fs.some((f) => f.department_id === d.id))
@@ -342,6 +436,7 @@ async function render(ticket) {
     } else if (page === "docs") {
         c.innerHTML = docs();
     }
+    animateReveal(c);
     bind();
 }
 async function forecast() {
@@ -452,6 +547,34 @@ $("#all-periods").onclick = () => {
 };
 $("#close-modal").onclick = $("#cancel-modal").onclick = () =>
     $("#modal").close();
+const logoutForm = document.getElementById("logout-form");
+if (logoutForm)
+    logoutForm.addEventListener("submit", (e) => {
+        if (!window.Swal) return;
+        e.preventDefault();
+        Swal.fire({
+            title: "¿Cerrar sesión?",
+            icon: "question",
+            showCancelButton: true,
+            confirmButtonText: "Sí, salir",
+            cancelButtonText: "Cancelar",
+            confirmButtonColor: "#087f65",
+        }).then(
+            (r) =>
+                r.isConfirmed &&
+                HTMLFormElement.prototype.submit.call(logoutForm),
+        );
+    });
+if (window.gsap) {
+    gsap.from("aside", { x: -36, opacity: 0, duration: 0.55, ease: "power2.out" });
+    gsap.from("header", {
+        y: -18,
+        opacity: 0,
+        duration: 0.45,
+        delay: 0.12,
+        ease: "power2.out",
+    });
+}
 function field(label, name, type, value = "", extra = "") {
     return `<label>${label}<input name="${name}" type="${type}" value="${esc(value)}" ${extra} required></label>`;
 }
@@ -499,7 +622,14 @@ function editor(kind, id) {
     if ($("#add-panel"))
         $("#add-panel").onclick = () => {
             if (!panels.length) {
-                alert("Registra primero un modelo de panel.");
+                if (window.Swal)
+                    Swal.fire({
+                        icon: "warning",
+                        title: "Sin modelos de panel",
+                        text: "Registra primero un modelo de panel.",
+                        confirmButtonColor: "#087f65",
+                    });
+                else alert("Registra primero un modelo de panel.");
                 return;
             }
             $("#panel-lines").insertAdjacentHTML("beforeend", panelLine());
@@ -536,9 +666,7 @@ async function save(e) {
             api("/api/farms"),
             api("/api/panels"),
         ]);
-        $("#toast").textContent = "Cambios guardados correctamente";
-        $("#toast").hidden = false;
-        setTimeout(() => ($("#toast").hidden = true), 3500);
+        toast("success", "Cambios guardados correctamente");
         await load();
     } catch (e) {
         $("#form-error").textContent = e.message;

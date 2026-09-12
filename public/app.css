@@ -48,11 +48,16 @@ button,
     align-items: center;
     justify-content: center;
     gap: 8px;
+    transition: background 0.15s ease, border-color 0.15s ease, transform 0.1s ease;
 }
 button:hover,
 .button:hover {
     background: #edf7f3;
     border-color: #9bbeb2;
+}
+button:active,
+.button:active {
+    transform: scale(0.96);
 }
 button:focus-visible,
 a:focus-visible,
@@ -120,6 +125,10 @@ nav button {
     color: #a9c0bf;
     font-size: 18px;
     padding: 13px 15px;
+    transition: background 0.15s ease, color 0.15s ease, transform 0.1s ease;
+}
+nav button:active {
+    transform: scale(0.97);
 }
 nav button span {
     font-size: 13px;
@@ -268,6 +277,11 @@ select {
     border-radius: 12px;
     padding: 23px;
     box-shadow: 0 3px 10px #152c3603;
+    transition: transform 0.22s ease, box-shadow 0.22s ease;
+}
+.card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 16px 34px -18px #152c3640;
 }
 .metric {
     position: relative;
@@ -480,10 +494,30 @@ dialog {
     width: min(650px, 94vw);
     max-height: 92vh;
     box-shadow: 0 25px 100px #0003;
+    animation: dialog-pop 0.25s cubic-bezier(0.2, 0.8, 0.2, 1);
 }
 dialog::backdrop {
     background: #0a262b99;
     backdrop-filter: blur(3px);
+    animation: backdrop-fade 0.25s ease;
+}
+@keyframes dialog-pop {
+    from {
+        opacity: 0;
+        transform: scale(0.94) translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: none;
+    }
+}
+@keyframes backdrop-fade {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
 }
 .dialog-heading {
     display: flex;
@@ -557,16 +591,6 @@ dialog::backdrop {
 }
 .login-card > a {
     font-size: 12px;
-}
-#toast {
-    position: fixed;
-    bottom: 25px;
-    right: 25px;
-    background: #123e33;
-    color: white;
-    padding: 17px 25px;
-    border-radius: 10px;
-    z-index: 5000;
 }
 .docs {
     line-height: 1.8;
@@ -776,3 +800,14 @@ dialog::backdrop {
 [hidden] { display: none !important; }
 
 @media(max-width:720px){.filters{display:grid;grid-template-columns:1fr 1fr}.filters button{grid-column:1/-1}nav{scrollbar-width:thin}}
+
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.001ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.001ms !important;
+        scroll-behavior: auto !important;
+    }
+}
