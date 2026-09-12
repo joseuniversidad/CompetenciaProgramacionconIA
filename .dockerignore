@@ -1,0 +1,9 @@
+.git
+.env
+vendor
+node_modules
+ACCESO-LOCAL.txt
+.runtime
+storage/logs/*
+storage/framework/sessions/*
+database/*.sqlite
